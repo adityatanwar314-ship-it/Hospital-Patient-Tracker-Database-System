@@ -1,0 +1,84 @@
+CREATE DATABASE HospitalManagement;
+
+USE HospitalManagement;
+
+CREATE TABLE Patients (
+    patient_id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(100),
+    gender VARCHAR(10),
+    age INT,
+    phone VARCHAR(20),
+    admission_date DATE
+);
+
+CREATE TABLE Doctors (
+    doctor_id INT PRIMARY KEY AUTO_INCREMENT,
+    doctor_name VARCHAR(100),
+    specialization VARCHAR(100),
+    phone VARCHAR(20)
+);
+
+CREATE TABLE Appointments (
+    appointment_id INT PRIMARY KEY AUTO_INCREMENT,
+    patient_id INT,
+    doctor_id INT,
+    appointment_date DATE,
+    diagnosis VARCHAR(255),
+
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id)
+);
+
+INSERT INTO Patients
+(full_name, gender, age, phone, admission_date)
+VALUES
+('Rahul Sharma','Male',24,'9876543210','2025-05-01'),
+('Priya Verma','Female',21,'9876543211','2025-05-03'),
+('Aman Gupta','Male',30,'9876543212','2025-05-05');
+
+INSERT INTO Doctors
+(doctor_name, specialization, phone)
+VALUES
+('Dr. Mehta','Cardiology','9876500001'),
+('Dr. Singh','Orthopedics','9876500002'),
+('Dr. Gupta','Neurology','9876500003');
+
+INSERT INTO Appointments
+(patient_id, doctor_id, appointment_date, diagnosis)
+VALUES
+(1,1,'2025-05-10','Regular Checkup'),
+(2,2,'2025-05-11','Knee Pain'),
+(3,3,'2025-05-12','Migraine');
+
+SELECT * FROM Patients;
+
+SELECT * FROM Doctors;
+
+SELECT
+p.full_name,
+d.doctor_name,
+d.specialization,
+a.appointment_date,
+a.diagnosis
+FROM Appointments a
+JOIN Patients p
+ON a.patient_id = p.patient_id
+JOIN Doctors d
+ON a.doctor_id = d.doctor_id;
+
+SELECT
+specialization,
+COUNT(*) AS total_doctors
+FROM Doctors
+GROUP BY specialization;
+
+CREATE VIEW PatientAppointments AS
+SELECT
+p.full_name,
+d.doctor_name,
+a.appointment_date
+FROM Appointments a
+JOIN Patients p
+ON a.patient_id = p.patient_id
+JOIN Doctors d
+ON a.doctor_id = d.doctor_id;
